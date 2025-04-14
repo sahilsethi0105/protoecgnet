@@ -48,10 +48,6 @@ parse_args() {
 
 export TORCH_HOME=/gpfs/data/bbj-lab/users/sethis/torch_cache
 
-# debugging flags
-# export NCCL_DEBUG=INFO
-# export PYTHONFAULTHANDLER=1
-
 # Parse the arguments
 parse_args "$@"
 
@@ -63,11 +59,6 @@ module load miniconda3/24.9.2
 module list 2>&1
 
 conda activate /gpfs/data/bbj-lab/users/sethis/ecg_env
-
-#debugging
-# which python  
-# python --version  
-# conda list 
 
 # Run the Python script with parsed arguments
 cd /gpfs/data/bbj-lab/users/sethis/bbj_ecg/src
@@ -113,7 +104,3 @@ fi
 eval $CMD > "/gpfs/data/bbj-lab/users/sethis/bbj_ecg/${job_name}_results.txt"
 
 conda deactivate
-
-
-#Command line test: 
-#sbatch train.sh --job_name "train_resnet1d" --epochs 5 --batch_size 32        --lr 1e-3 --checkpoint_dir "/gpfs/data/bbj-lab/users/sethis/experiments/checkpoints"        --log_dir "/gpfs/data/bbj-lab/users/sethis/experiments/logs" --save_top_k 3        --patience 5 --resume_checkpoint True --training_stage "feature_extractor"        --dimension "1D" --backbone "resnet1d18" --single_class_prototype_per_class 10 --joint_prototypes_per_border 5        --sampling_rate 100 --label_set "superdiagnostic" --save_weights True --seed 42 --num_workers 0
