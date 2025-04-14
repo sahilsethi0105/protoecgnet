@@ -39,7 +39,7 @@ Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/con
     - "fusion" trains a fusion classifier, but you need to go in and manually update the arguments in [`src/main.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/main.py) (paths to model weights for each branch, number of prototypes per branch, backbone type per branch, etc.)
     - "projection" does not train the model—it instead performs prototype projection
  - Inference is automatically done after training (excluding when training_stage = "projection"), and results are logged to TensorBoard and an output CSV
- - All training progress is logged to Tensorboard
+ - All training progress is logged to TensorBoard
  - Descriptions of each input argument can be found in [`src/main.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/main.py)
 
 ```bash
