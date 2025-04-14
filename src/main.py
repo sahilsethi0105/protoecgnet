@@ -4,8 +4,8 @@ if __name__ == '__main__':
     from training_functions import train_model, test_model, seed_everything, ECGTrainer
     from ecg_utils import get_dataloaders, load_label_mappings
     from backbones import (
-        resnet1d18, resnet1d34, resnet1d50, resnet1d101, resnet1d152, ECG_CNN2D, 
-        resnet18, resnet34, resnet50, resnet101, resnet152, InceptionTime1D, CNN_GRU1D, TimeSeriesTransformer, CNN_Transformer1D, MambaSSM_ECG
+        resnet1d18, resnet1d34, resnet1d50, resnet1d101, resnet1d152,  
+        resnet18, resnet34, resnet50, resnet101, resnet152
     )
     from proto_models1D import ProtoECGNet1D
     from proto_models2D import ProtoECGNet2D
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     parser.add_argument('--add_on_layers_type', type=str, choices=['linear', 'identity', 'other'], default='linear')
     parser.add_argument('--class_specific', type=str2bool, default=True, help='Whether to use class-specific prototypes')
     parser.add_argument('--last_layer_connection_weight', type=float, default=1.0, help='Weight of last layer connection in the model')
-    parser.add_argument('--m', type=float, default=0.05, help='Margin for prototype learning')
+    parser.add_argument('--m', type=float, default=0.05, help='Margin for prototype learning') #unused in our paper
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu", type=str, help="Device to use for projection (cuda or cpu)")
     parser.add_argument('--dropout', type=float, default=0)
     parser.add_argument('--checkpoint_dir', type=str, default='/gpfs/data/bbj-lab/users/sethis/experiments/checkpoints')
@@ -58,12 +58,11 @@ if __name__ == '__main__':
     parser.add_argument('--dimension', type=str, choices=['1D', '2D'], required=True, help='Specify whether the model is 1D or 2D')
     parser.add_argument('--backbone', type=str, choices=[
         'resnet1d18', 'resnet1d34', 'resnet1d50', 'resnet1d101', 'resnet1d152',
-        'InceptionTime1D', 'CNN_GRU1D', 'TimeSeriesTransformer', 'CNN_Transformer1D', 'MambaSSM_ECG', 
-        'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152', 'ECG_CNN2D',
+        'resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152',
     ], required=True, help='Specify the backbone architecture')
     parser.add_argument('--single_class_prototype_per_class', type=int, default=5)
-    parser.add_argument('--joint_prototypes_per_border', type=int, default=1)
-    parser.add_argument('--sampling_rate', type=int, choices=[100, 500], required=True)
+    parser.add_argument('--joint_prototypes_per_border', type=int, default=0) #not used in our paper
+    parser.add_argument('--sampling_rate', type=int, choices=[100, 500], required=True) #we use 100 Hz
     parser.add_argument('--label_set', type=str, choices=['superdiagnostic', 'subdiagnostic', 'all', 'diagnostic', 'form', 'rhythm', '1', '2', '3', '4'], default='superdiagnostic')
     parser.add_argument('--test_model', type=str2bool, default=False, help='Flag to of whether to skip training and just test the model')
     parser.add_argument('--save_weights', type=str2bool, default=True, help='Flag to save model weights after training')
@@ -82,15 +81,15 @@ if __name__ == '__main__':
     parser.add_argument('--fusion_weights4', type=str, default='/gpfs/data/bbj-lab/users/sethis/experiments/checkpoints/cat4_static_constants_tune1_proj/cat4_static_constants_tune1_proj_projection.pth', help='Path to pretrained model weights for category 4')
     
     parser.add_argument('--fusion_backbone1', type=str, default='resnet1d18', help='Backbone for 1D rhythm model (category 1)')
-    parser.add_argument('--fusion_backbone3', type=str, default='ECG_CNN2D', help='Backbone for 2D partial morphology model (category 3)')
-    parser.add_argument('--fusion_backbone4', type=str, default='ECG_CNN2D', help='Backbone for 2D global model (category 4)')
+    parser.add_argument('--fusion_backbone3', type=str, default='resnet18', help='Backbone for 2D partial morphology model (category 3)')
+    parser.add_argument('--fusion_backbone4', type=str, default='resnet18', help='Backbone for 2D global model (category 4)')
 
     parser.add_argument('--fusion_proto_dim1', type=int, default=512, help='Prototype dimension for 1D rhythm model (category 1)')
     parser.add_argument('--fusion_proto_dim3', type=int, default=512, help='Prototype dimension for 2D partial morphology model (category 3)')
     parser.add_argument('--fusion_proto_dim4', type=int, default=512, help='Prototype dimension for 2D global model (category 4)')
 
     parser.add_argument('--fusion_single_ppc1', type=int, default=5, help='Single-class prototypes per class for category 1')
-    parser.add_argument('--fusion_single_ppc3', type=int, default=14, help='Single-class prototypes per class for category 3')
+    parser.add_argument('--fusion_single_ppc3', type=int, default=18, help='Single-class prototypes per class for category 3')
     parser.add_argument('--fusion_single_ppc4', type=int, default=3, help='Single-class prototypes per class for category 4')
 
     parser.add_argument('--fusion_joint_ppb1', type=int, default=0, help='Joint prototypes per border for category 1')
@@ -98,11 +97,11 @@ if __name__ == '__main__':
     parser.add_argument('--fusion_joint_ppb4', type=int, default=0, help='Joint prototypes per border for category 4')
     args = parser.parse_args()
 
-    # Set random seed for reproducibility
+    # Set random seed
     print(f"Setting random seed: {args.seed}")
     seed_everything(args.seed)
     
-    # Determine number of classes dynamically
+    # Determine number of classes
     print("Loading label mappings...")
     label_mappings = load_label_mappings(
         custom_groups=args.custom_groups,
@@ -181,8 +180,7 @@ if __name__ == '__main__':
 
 
         print("Loading pretrained 1D and 2D models for fusion...")
-        #assert args.dimension == "2D", "Fusion model is independent of args.dimension; default to 2D for simplicity"
-
+        
         print(f"Creating category 1 model with backbone {args.fusion_backbone1}...")
         model_1d = ProtoECGNet1D(
             num_classes=num_classes1,
