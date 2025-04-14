@@ -1,6 +1,6 @@
 ﻿,description,prototype_category,diagnostic,form,rhythm,diagnostic_class,diagnostic_subclass,Statement Category,SCP-ECG Statement Description,AHA code,aECG REFID,CDISC Code,DICOM Code,,Prototype Categories
 NDT,non-diagnostic T abnormalities,3,1,1,,STTC,STTC,other ST-T descriptive statements,non-diagnostic T abnormalities,,,,,,1=rhythm (1D CNN all 10 seconds and show a representative lead; no inter-lead relationships)
-NST_,non-specific ST changes,3,1,1,,STTC,NST_,Basic roots for coding ST-T changes and abnormalities,non-specific ST changes,145,MDC_ECG_RHY_STHILOST,,,,"2=local form (like #1 but show a narrower time-window like 0.5 second, and still just one representative lead and no inter-lead relationships) "
+NST_,non-specific ST changes,3,1,1,,STTC,NST_,Basic roots for coding ST-T changes and abnormalities,non-specific ST changes,145,MDC_ECG_RHY_STHILOST,,,,
 DIG,digitalis-effect,4,1,1,,STTC,STTC,other ST-T descriptive statements,suggests digitalis-effect,205,,,,,"3=multi-lead morphology (2D CNN for inter-lead relationships and relatively narrow time window like 0.5-1 second, but all 12 leads)"
 LNGQT,long QT-interval,3,1,1,,STTC,STTC,other ST-T descriptive statements,long QT-interval,148,,,,,4=global 12-lead (like #3 but all 10 seconds and all leads)
 NORM,normal ECG,4,1,,,NORM,NORM,Normal/abnormal,normal ECG,1,,,F-000B7,,
