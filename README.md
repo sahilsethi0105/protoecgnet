@@ -21,10 +21,16 @@ conda activate ecg_env
 Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/content/ptb-xl/1.0.3/). 
 
 ## Using the Repo with PTB-XL: 
-- In [`ecg_utils.py`](https://github.com/sahilsethi0105/bbj_ecg/blob/main/src/ecg_utils.py), update ```DATASET_PATH``` to where you installed the dataset, and update the ```STANDARDIZATION_PATH``` directory (where you want to save preprocessing results 
+- In [`ecg_utils.py`](https://github.com/sahilsethi0105/bbj_ecg/blob/main/src/ecg_utils.py), update ```DATASET_PATH``` to where you installed the dataset, update the ```STANDARDIZATION_PATH``` directory (where you want to save preprocessing results), and update ```SCP_GROUP_PATH``` to where you save [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv)
 
 ## Training
  - Below is an example python command for training a model
+ - You can choose to train on any of the dataset groupings from the original PTB-XL paper (i.e., "superdiagnostic", "subdiagnostic", "diagnostic", "form", "rhythm", "all") by simply passing that string into ```args.label_set```, but ensure ```args.custom_groups``` is set to False
+ - If you want to train with the custom groupings from our paper, set ```args.custom_groups``` to True and pass in either 1, 3, or 4 for ```args.label_set``` depending on which label grouping you want to use
+   - 1=1D rhythm
+   - 3=2D local morphology
+   - 4=2D global
+   - [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv) contains the groupings
  - Update "training_stage" as desired: 
     - "feature_extractor" trains a normal 1D or 2D ResNet
     - "prototypes" freezes the feature extractor and classifier, and only trained the prototype (and add-on) layers, so you need to use the "pretrained_weights" argument to provide weights to a pre-trained feature extractor
