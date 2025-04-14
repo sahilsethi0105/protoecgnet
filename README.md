@@ -32,7 +32,7 @@ Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/con
    - 4=2D global
    - [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv) contains the groupings
  - Update "training_stage" as desired: 
-    - "feature_extractor" trains a normal 1D or 2D ResNet
+    - "feature_extractor" trains a normal 1D or 2D ResNet (the remaining stages initialize a ProtoECGNet)
     - "prototypes" freezes the feature extractor and classifier, and only trained the prototype (and add-on) layers, so you need to use the "pretrained_weights" argument to provide weights to a pre-trained feature extractor
     - "joint" trains everything except the classifier
     - "classifier" trains a branch-specific classifier
