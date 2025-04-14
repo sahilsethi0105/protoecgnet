@@ -92,7 +92,7 @@ def prototype_loss2d(logits, y_true, model, similarity_scores, class_weights,
     return classification_loss + lam_clst * clst_loss + lam_sep * sep_loss + lam_spars * spars_loss + lam_div * div_loss + lam_cnrst * cnrst_loss
 
 class ProtoECGNet2D(nn.Module):
-    def __init__(self, backbone="ECG_CNN2D", num_classes=5, single_class_prototype_per_class=5, joint_prototypes_per_border=0, proto_dim=512, proto_time_len=3, 
+    def __init__(self, backbone="resnet18", num_classes=5, single_class_prototype_per_class=5, joint_prototypes_per_border=0, proto_dim=512, proto_time_len=3, 
                 prototype_activation_function="log", latent_space_type="l2", add_on_layers_type="other", class_specific=False, last_layer_connection_weight=None, m=None, dropout=0, 
                 custom_groups=True, label_set='all', pretrained_weights=None):
    
@@ -316,7 +316,7 @@ class ProtoECGNet2D(nn.Module):
         
         backbones = {
             "resnet18": resnet18, "resnet34": resnet34, "resnet50": resnet50,
-            "resnet101": resnet101, "resnet152": resnet152, "ECG_CNN2D": ECG_CNN2D,
+            "resnet101": resnet101, "resnet152": resnet152
         }
         
         if backbone not in backbones:
