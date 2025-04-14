@@ -6,7 +6,7 @@ from functools import reduce
 import operator as op
 from backbones import (
     resnet18, resnet34, resnet50, 
-    resnet101, resnet152, ECG_CNN2D, 
+    resnet101, resnet152
 )
 
 def prototype_loss2d(logits, y_true, model, similarity_scores, class_weights, 
