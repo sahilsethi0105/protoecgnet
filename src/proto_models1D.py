@@ -346,10 +346,7 @@ class ProtoECGNet1D(nn.Module):
         
         backbones = {
             "resnet1d18": resnet1d18, "resnet1d34": resnet1d34, "resnet1d50": resnet1d50,
-            "resnet1d101": resnet1d101, "resnet1d152": resnet1d152,
-            "InceptionTime1D": InceptionTime1D, "CNN_GRU1D": CNN_GRU1D,
-            "TimeSeriesTransformer": TimeSeriesTransformer, "CNN_Transformer1D": CNN_Transformer1D,
-            "MambaSSM_ECG": MambaSSM_ECG
+            "resnet1d101": resnet1d101, "resnet1d152": resnet1d152
         }
         
         if backbone not in backbones:
