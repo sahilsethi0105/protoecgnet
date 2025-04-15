@@ -24,7 +24,7 @@ conda activate ecg_env
 ## Accessing the Data
 Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/content/ptb-xl/1.0.3/). 
 
-## Using the Repo with PTB-XL: 
+## Using the Repo with PTB-XL
 - In [`ecg_utils.py`](https://github.com/sahilsethi0105/bbj_ecg/blob/main/src/ecg_utils.py), update ```DATASET_PATH``` to where you installed the dataset, update the ```STANDARDIZATION_PATH``` directory (where you want to save preprocessing results), and update ```SCP_GROUP_PATH``` to where you save [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv)
 
 ## Training
