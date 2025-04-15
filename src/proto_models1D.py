@@ -75,9 +75,9 @@ def prototype_loss1d(logits, y_true, model, similarity_scores, class_weights,
         neg_norm = neg_mask / (neg_mask.sum() + 1e-6)
 
         # Compute contrastive loss
-        pos_loss = -torch.sum(sim_matrix * pos_norm)
+        pos_loss = torch.sum(sim_matrix * pos_norm)
         neg_loss = torch.sum(sim_matrix * neg_norm)
-        cnrst_loss = - (pos_loss - neg_loss) / 2
+        cnrst_loss = - (pos_loss - neg_loss) / (model.num_prototypes ** 0.5)
     else:
         cnrst_loss = 0
 
