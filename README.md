@@ -125,7 +125,9 @@ python tune.py \
 
 ## Developers
    - Training/Tuning Repo: [Sahil Sethi](https://github.com/sahilsethi0105)
-   - User Interface: [David Chen](https://github.com/sudoris)
+   - User Interface (see below): [David Chen](https://github.com/sudoris)
+
+![Alt text](evaluation_interface.jpg)
 
 ## Citation
 
