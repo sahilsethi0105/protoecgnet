@@ -114,14 +114,12 @@ python tune.py \
  - [`scripts/`](https://github.com/sahilsethi0105/protoecgnet/tree/main/scripts) contains the shell scripts used to submit jobs to SLURM if using an HPC
 
  - To view TensorBoard logs, after activating your conda environment (with TensorBoard installed), do:
-  ```
-  tensorboard --logdir=/path/to/logdir/job_name --port 6006
-  ```
-   - Replace ```'path/to/logdir/'``` with the actual path, and make sure to update it in the relevant parts of the repo
-   - Use the ```'job_name'``` from when you began training/tuning
-   - Then, either access ```http://localhost:6006``` in your browser
-   - Or if on an HPC, ssh into the computer with a new terminal tab ```ssh -L 6006:localhost:6006 myaccount@example_computer.edu```, then access ```http://localhost:6006``` in your browser
-   - You can use a different port (6006 is chosen as an example)
+   ```tensorboard --logdir=/path/to/logdir/job_name --port 6006```
+    - Replace ```'path/to/logdir/'``` with the actual path, and make sure to update it in the relevant parts of the repo
+    - Use the ```'job_name'``` from when you began training/tuning
+    - Then, either access ```http://localhost:6006``` in your browser
+    - Or if on an HPC, ssh into the computer with a new terminal tab ```ssh -L 6006:localhost:6006 myaccount@example_computer.edu```, then access ```http://localhost:6006``` in your browser
+    - You can use a different port (6006 is chosen as an example)
 
 ## Developers
    - Training/Tuning Repo: [Sahil Sethi](https://github.com/sahilsethi0105)
