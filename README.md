@@ -123,6 +123,10 @@ python tune.py \
    - Or if on an HPC, ssh into the computer with a new terminal tab ```ssh -L 6006:localhost:6006 myaccount@example_computer.edu```, then access ```http://localhost:6006``` in your browser
    - You can use a different port (6006 is chosen as an example)
 
+## Developers
+   - Training/Tuning Repo: [Sahil Sethi](https://github.com/sahilsethi0105)
+   - User interface: [David Chen](https://github.com/sudoris)
+
 ## Citation
 
 Please cite our paper below: 
