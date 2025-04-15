@@ -6,7 +6,7 @@ Case-based interpretable deep learning for ECG classification. This code impleme
 
 
 The ProtoECGNet architecture is shown below:
-![Alt text](ProtoECG_architecture_dark.jpg)
+![Alt text](ProtoECGNet_architecture.jpg)
 
 ## Installation
 
