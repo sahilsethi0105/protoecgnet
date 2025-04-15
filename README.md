@@ -4,6 +4,10 @@ Case-based interpretable deep learning for ECG classification. This code impleme
 > [**ProtoECGNet: Case-Based Interpretable Deep Learning for Multi-Label ECG Classification**](https://arxiv.org/abs/2504.08713)<br/>
  Sahil Sethi, David Chen, Thomas Statchen, Michael C. Burkhart, Nipun Bhandari, Bashar Ramadan, & Brett Beaulieu-Jones. <b>arXiv</b>, preprint under review.
 
+
+The ProtoECGNet architecture is shown below:
+![Alt text](ProtoECG_architecture.jpg)
+
 ## Installation
 
 Requirements:
