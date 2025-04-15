@@ -308,7 +308,6 @@ class ECGTrainer(pl.LightningModule):
             self.logger.experiment.add_figure("Test/PR_Curve", fig_pr, global_step=self.current_epoch)
 
     def plot_confusion_matrix(self, cm):
-        """Plots and returns a confusion matrix figure for multi-label classification."""
         num_classes = cm.shape[0]
         fig, axes = plt.subplots(1, num_classes, figsize=(15, 5))
         for i, class_name in enumerate(self.class_names):
@@ -320,7 +319,6 @@ class ECGTrainer(pl.LightningModule):
         return fig
 
     def plot_roc_curve(self, y_true, y_probs):
-        """Plots ROC curves for each class correctly using true labels and predicted probabilities."""
         num_classes = y_true.shape[1]
         fig, ax = plt.subplots(figsize=(8, 6))
         for i, class_name in enumerate(self.class_names):
@@ -336,7 +334,6 @@ class ECGTrainer(pl.LightningModule):
         return fig
 
     def plot_pr_curve(self, y_true, y_probs):
-        """Plots Precision-Recall curves for each class correctly."""
         num_classes = y_true.shape[1]
         fig, ax = plt.subplots(figsize=(8, 6))
         for i, class_name in enumerate(self.class_names):
@@ -373,7 +370,6 @@ class ECGTrainer(pl.LightningModule):
         return {"optimizer": optimizer, "lr_scheduler": scheduler, "monitor": "val_loss"}  # Monitor val_loss for schedulers
 
     def _compute_auc(self, logits, y):
-        """ Computes AUC for a single batch, safely skipping invalid classes. """
         preds = torch.sigmoid(logits).detach().cpu().numpy()
         targets = y.detach().cpu().numpy()
 
