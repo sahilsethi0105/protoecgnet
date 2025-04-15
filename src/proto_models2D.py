@@ -72,10 +72,10 @@ def prototype_loss2d(logits, y_true, model, similarity_scores, class_weights,
         neg_norm = neg_mask / (neg_mask.sum() + 1e-6)
 
         # Apply contrastive loss
-        pos_loss = -torch.sum(sim_matrix * pos_norm)  # Encourage similarity for co-occurring classes
+        pos_loss = torch.sum(sim_matrix * pos_norm)  # Encourage similarity for co-occurring classes
         neg_loss = torch.sum(sim_matrix * neg_norm)   # Discourage similarity otherwise
 
-        cnrst_loss = - (pos_loss - neg_loss) / 2
+        cnrst_loss = - (pos_loss - neg_loss) / (model.num_prototypes ** 0.5)
     else:
         cnrst_loss = 0
 
