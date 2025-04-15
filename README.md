@@ -113,7 +113,7 @@ python tune.py \
  - The commands in  are for directly running the files
  - [`scripts/`](https://github.com/sahilsethi0105/protoecgnet/tree/main/scripts) contains the shell scripts used to submit jobs to SLURM if using an HPC
 
-  To view TensorBoard logs, after activating your conda environment (with TensorBoard installed), do:
+ - To view TensorBoard logs, after activating your conda environment (with TensorBoard installed), do:
   ```
   tensorboard --logdir=/path/to/logdir/job_name --port 6006
   ```
