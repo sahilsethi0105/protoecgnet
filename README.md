@@ -1,4 +1,7 @@
 # ProtoECGNet
+
+*Note: The official version of this repo has been moved [here](https://github.com/bbj-lab/protoecgnet). This one may be out of date.*
+
 Case-based interpretable deep learning for ECG classification. This code implements ProtoECGNet from the following paper: 
 
 > [**ProtoECGNet: Case-Based Interpretable Deep Learning for Multi-Label ECG Classification**](https://arxiv.org/abs/2504.08713)<br/>
