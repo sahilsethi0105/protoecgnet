@@ -4,7 +4,7 @@
 
 Case-based interpretable deep learning for ECG classification. This code implements ProtoECGNet from the following paper: 
 
-> [**ProtoECGNet: Case-Based Interpretable Deep Learning for Multi-Label ECG Classification**](https://arxiv.org/abs/2504.08713)<br/>
+> [**ProtoECGNet: Case-Based Interpretable Deep Learning for Multi-Label ECG Classification**](https://pmc.ncbi.nlm.nih.gov/articles/PMC12091707/)<br/>
  Sahil Sethi, David Chen, Thomas Statchen, Michael C. Burkhart, Nipun Bhandari, Bashar Ramadan, & Brett Beaulieu-Jones. <b>arXiv</b>, preprint under review.
 
 
@@ -18,9 +18,9 @@ Requirements:
 - `python==3.10`
 
 ```bash
-git clone https://github.com/sahilsethi0105/protoecgnet.git
+git clone https://github.com/bbj-lab/protoecgnet.git
 cd protoecgnet
-conda env create -f environment.yml
+conda env create -f environment.yml --name ecg_env
 conda activate ecg_env
 ```
 
@@ -28,7 +28,7 @@ conda activate ecg_env
 Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/content/ptb-xl/1.0.3/). 
 
 ## Using the Repo with PTB-XL
-- In [`ecg_utils.py`](https://github.com/sahilsethi0105/bbj_ecg/blob/main/src/ecg_utils.py), update ```DATASET_PATH``` to where you installed the dataset, update the ```STANDARDIZATION_PATH``` directory (where you want to save preprocessing results), and update ```SCP_GROUP_PATH``` to where you save [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv)
+- In [`ecg_utils.py`](https://github.com/bbj-lab/bbj_ecg/blob/main/src/ecg_utils.py), update ```DATASET_PATH``` to where you installed the dataset, update the ```STANDARDIZATION_PATH``` directory (where you want to save preprocessing results), and update ```SCP_GROUP_PATH``` to where you save [`scp_statementsRegrouped2.csv`](https://github.com/bbj-lab/protoecgnet/blob/main/scp_statementsRegrouped2.csv)
 
 ## Training
  - Below is an example python command for training a model
@@ -37,21 +37,30 @@ Please install PTB-XL directly from PhysioNet [`here`](https://physionet.org/con
    - 1=1D rhythm (use ```args.proto_time_len```=32)
    - 3=2D local morphology (use ```args.proto_time_len```=3)
    - 4=2D global (use ```args.proto_time_len```=32)
-   - [`scp_statementsRegrouped2.csv`](https://github.com/sahilsethi0105/protoecgnet/blob/main/scp_statementsRegrouped2.csv) contains the groupings
- - Note that you need to pre-compute the label co-occurrence matrices, then update their file paths for each label set in [`proto_models1D.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/proto_models1D.py) and [`proto_models2D.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/proto_models2D.py):
-   - In [`label_co.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/label_co.py), update ```label_set``` in the ```get_dataloaders()``` call based on the same value you are planning to use when training your model
+   - [`scp_statementsRegrouped2.csv`](https://github.com/bbj-lab/protoecgnet/blob/main/scp_statementsRegrouped2.csv) contains the groupings
+ - Note that you need to pre-compute the label co-occurrence matrices, then update their file paths for each label set in [`proto_models1D.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/proto_models1D.py) and [`proto_models2D.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/proto_models2D.py):
+   - In [`label_co.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/label_co.py), update ```label_set``` in the ```get_dataloaders()``` call based on the same value you are planning to use when training your model
    - Also update the ```save_path``` to be appropriate for that label set
    - Then, simply run ```python label_co.py``` in the terminal
  - Update "training_stage" as desired: 
     - "feature_extractor" trains a normal 1D or 2D ResNet (the remaining stages initialize a ProtoECGNet)
-    - "prototypes" freezes the feature extractor and classifier, and only trained the prototype (and add-on) layers, so you need to use the "pretrained_weights" argument to provide weights to a pre-trained feature extractor
+    - "prototypes" freezes the feature extractor and classifier, and only trains the prototype (and add-on) layers, so you need to use the ```pretrained_weights``` argument to provide weights to a pre-trained feature extractor
     - "joint" trains everything except the classifier
     - "classifier" trains a branch-specific classifier
-    - "fusion" trains a fusion classifier, but you need to go in and manually update the arguments in [`src/main.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/main.py) (paths to model weights for each branch, number of prototypes per branch, backbone type per branch, etc.)
+    - "fusion" trains a fusion classifier, but you need to go in and manually update the arguments in [`src/main.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/main.py) (paths to model weights for each branch, number of prototypes per branch, backbone type per branch, etc.)
     - "projection" does not train the model—it instead performs prototype projection
- - Inference is automatically done after training (excluding when training_stage = "projection"), and results are logged to TensorBoard and an output CSV
+  - Training notes:
+    - Make sure to always do "projection" before training a classifier (whether doing the branch-specific "classifier" stage or the multi-branch "fusion" stage) to ensure prototypes are grounded in real training ECGs
+    - There are several ways to train models, including pre-training the ResNet backbone with the "feature_extractor" phase then passing those weights into the ```args.pretrained_weights``` argument when doing the "joint" phase
+    - You can also do multiple rounds of "joint" followed by "projection" each time before doing "classifier" or "fusion" if needed to improve performance
+    - You can also try freezing the ResNet backbone and only training the prototypes with the "prototypes" stage
+    - It is also encouraged to experiment with additional backbones (we focused on only ResNets to minimize variables and isolate the effect of our multi-branch architecture and contrastive loss)
+    - If using additional backbones, for at least the 2D partial prototype morphology branch, ensure the latent feature map preserves the spatial relationship of the input (for the partial prototypes to correctly correspond to localized time segments)
+    - You can see how we adapted ResNet 1D and 2D to work with our architecture in [`src/backbones.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/backbones.py)
+ - Inference is automatically done after training (excluding when training_stage = "projection"; after projection, train a branch-specific or fusion classifier before doing inference), and results are logged to TensorBoard and an output CSV
+   - You can also bypass training and just do inference if you set ```args.test_model```=True and specify the model weights using ```args.pretrained_weights```
  - All training progress is logged to TensorBoard
- - Descriptions of each input argument can be found in [`src/main.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/main.py)
+ - Descriptions of each input argument can be found in [`src/main.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/main.py)
 
 ```bash
 python3 main.py \
@@ -86,8 +95,8 @@ python3 main.py \
 
 ## Tuning
  - Below is an example python command for running a hyperparameter tuning sweep.
- - Adjust the search space directly in [`src/tune.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/tune.py) as desired (most of the arguments below won't be changed)
- - Descriptions of each input argument can be found in [`src/tune.py`](https://github.com/sahilsethi0105/protoecgnet/blob/main/src/tune.py)
+ - Adjust the search space directly in [`src/tune.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/tune.py) as desired (most of the arguments below won't be changed)
+ - Descriptions of each input argument can be found in [`src/tune.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/tune.py)
 
 ```bash
 python tune.py \
@@ -117,7 +126,7 @@ python tune.py \
     - You can easily hyperparameter tune this in `tune.py`
     - Similarly, you may be able to further optimize the loss coefficients, but we set default values that work well in `main.py` and `tune.py`
  - The commands above are for directly running the files
- - [`scripts/`](https://github.com/sahilsethi0105/protoecgnet/tree/main/scripts) contains the shell scripts used to submit jobs to SLURM if using an HPC
+ - [`scripts/`](https://github.com/bbj-lab/protoecgnet/tree/main/scripts) contains the shell scripts used to submit jobs to SLURM if using an HPC
 
  - To view TensorBoard logs, after activating your conda environment (with TensorBoard installed), do:
    ```tensorboard --logdir=/path/to/logdir/job_name --port 6006```
