@@ -2,12 +2,6 @@
 
 *Note: The official version of this repo has been moved [here](https://github.com/bbj-lab/protoecgnet). This one may be out of date.*
 
-Case-based interpretable deep learning for ECG classification. This code implements ProtoECGNet from the following paper: 
-
-> [**ProtoECGNet: Case-Based Interpretable Deep Learning for Multi-Label ECG Classification**](https://pmc.ncbi.nlm.nih.gov/articles/PMC12091707/)<br/>
- Sahil Sethi, David Chen, Thomas Statchen, Michael C. Burkhart, Nipun Bhandari, Bashar Ramadan, & Brett Beaulieu-Jones. <b>arXiv</b>, preprint under review.
-
-
 The ProtoECGNet architecture is shown below:
 ![Alt text](ProtoECGNet_architecture.jpg)
 
@@ -120,6 +114,12 @@ python tune.py \
     --backbone resnet18
 ```
 
+## Inference and Case-Based Explanations
+ - Use [`src/inference_fusion.py`](https://github.com/bbj-lab/protoecgnet/blob/main/src/inference_fusion.py) to run inference on the full test set using the fusion classifier
+   - Make sure to update all the paths/values in the top of the file
+   - It will determine what classes are predicted for each test ECG, and also determine what the top activated prototypes are for each predicted diagnosis using all three branches
+   - Example command: ```python inference_fusion.py --show-prototypes --sanity-check```
+ - Use [`src/case_explanations.ipynb`](https://github.com/bbj-lab/protoecgnet/blob/main/src/case_explanations.ipynb) for case-based explanations
 
 ## Additional Notes
  - We recommend 5-10 prototypes per branch for category 1 (1D global prototypes), 15-20 for category 3 (2D partial prototypes), and 3-8 for category 4 (2D global prototypes)
